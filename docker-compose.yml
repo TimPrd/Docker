@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  apache:
+      container_name: apache
+      hostname: apache
+      build: ./containers/apache
+      ports:
+        - '80:80'
+        - '443:443'
+      links:
+        - 'php:php'
+      volumes:
+        - ./src:/usr/local/apache2/htdocs
+
+  php:
+      build: ./containers/php
+      container_name: php
+      hostname: php
+      links:
+        - 'mysql:mysql'
+      volumes:
+        - ./src:/var/www/html
+      #working_dir: /usr/share/nginx/blog
+      #networks:
+        #- blog
+      
+  mysql:
+      container_name: mysql
+      #build: ./containers/mysql
+      image: 'mysql:5.7'
+      hostname: mysql
+      ports:
+        - '3306:3306'
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
